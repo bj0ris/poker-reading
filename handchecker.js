@@ -1,4 +1,4 @@
-
+//Change the findPairs to return the indexes like in findStraight and findFlush
 
 
 function translateHand(scoreInt){
@@ -9,11 +9,12 @@ function translateHand(scoreInt){
 //function that takes an array of 7 cards and returns an array of the 5 best cards + score int 
 //ex:['3_0','3_3','6_2','6_0','6_3',6] 6=full house
 function handChecker(cardArray){
-	//DONE! (more or less)
+
 	var potentialScoreArray = [0];
 
 	var flushFound = findFlush(cardArray);
 	var straightFound = findStraight(cardArray);
+	var pairsFound = findPairs(cardArray);
 	
 	if(flushFound){
 		potentialScoreArray.push(5);
@@ -23,15 +24,6 @@ function handChecker(cardArray){
 		potentialScoreArray.push(4);
 	}
 
-	//STRAIGHT FLUSH and ROYAL FLUSH IS NOT IMPLEMENTED YET!!!!!!!!!!
-	if(straightFound && flushFound){
-		if(straightFound.toString() == flushFound.toString()){
-			potentialScoreArray.push(8);
-			potentialScoreArray.push(9);
-		}
-	}
-
-	var pairsFound = findPairs(cardArray);
 	if(pairsFound.length<7){
 		if(pairsFound.length<6){			
 			if(pairsFound.length<5){				
@@ -41,6 +33,7 @@ function handChecker(cardArray){
 				}
 				else{
 					//Full house or three of a kind, or three pairs(?) [[1,1,1],[2,2],[3,3]],[[1,1],[2,2],[3,3],[4]]
+					//I hava a feeling this might be bugged
 					if(checkFullHouse(pairsFound)){
 						potentialScoreArray.push(6);
 					}
@@ -50,6 +43,7 @@ function handChecker(cardArray){
 				}
 			}
 			else{
+				//Three of a kind or two pairs
 				if(checkThreeOfAKind(pairsFound)){
 					potentialScoreArray.push(3);
 				}
@@ -63,17 +57,26 @@ function handChecker(cardArray){
 			potentialScoreArray.push(1);
 		}
 	}
+	//STRAIGHT FLUSH and ROYAL FLUSH IS NOT IMPLEMENTED YET!!!!!!!!!!
+	if(straightFound && flushFound){
+		if(straightFound.toString() == flushFound.toString()){
+			potentialScoreArray.push(8);
+			potentialScoreArray.push(9);
+		}
+	}
 
 	potentialScoreArray.sort(sortNumber);
+
+	//Best score should be the last element in the potentialScoreArray
 	var potBestHand = potentialScoreArray[potentialScoreArray.length-1];
 	//console.log(potBestHand);
+
 
 	var origArray = [];
 	cardArray.forEach(function(element){
 		origArray.push(getValue(element));
 	});
 
-	//TESTING
 	var pairsHand = getPairsIndex(pairsFound,origArray);
 
 	var bestHandArray = [];
@@ -102,8 +105,6 @@ function handChecker(cardArray){
 	}
 
 	bestHandArray.push(potBestHand);
-	console.log(bestHandArray+'');
-	console.log("------------------------------------------------");
 	return bestHandArray;
 
 
@@ -144,7 +145,7 @@ function checkFullHouse(array){
 	}
 	return false
 }
-
+//Identical with the one above so.....
 function checkThreeOfAKind(array){
 	for(var i=0;i<array.length;i++){
 		if(array[i].length === 3){
@@ -162,7 +163,6 @@ function findPairs(cardArray){
 	var originalArray = [];
 
 	//Making the array
-
 	cardArray.forEach(function(element){
 		var value = getValue(element);
 		originalArray.push(value);
@@ -190,7 +190,7 @@ function findPairs(cardArray){
 
 //This function get an array of arrays of pairs, totaling 7 elements
 //It takes the most frequent (three/four of a kind first)
-//Returns an array of indexes
+//Returns an array of indexes relating to the original hand
 function getPairsIndex(pairsArray,originalArray){
 	//Sorting the pairsarray by the longest array in the 2nd dimention last
 	pairsArray.sort(sortLengthReverse);
@@ -359,16 +359,7 @@ function getSuit(cardString){
 	return parseInt(cardString.split('_')[1]);
 }
 
-
+//Don't remeber what this should do
 function getTheRest(restArray){
 
 }
-
-/*
-What to retun?
-
-1. Object with cheklist high-card= '14_0' one-pair=true, two-pair=false.., and an array of the 5 cards
-
-2. Two-dimentional array with "score" (f.ex 1-9),high-card (1-14), and array of the 5 cards
-
-*/

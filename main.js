@@ -2,16 +2,16 @@
 var ACTIVECARDS = [];
 var ALLHANDS = [];
 
-function addClickerToHands(){
+function addEventListeners(){
     for(var i=0;i<5;i++){
         var element = document.getElementsByClassName('hand'+i)[0];
         element.addEventListener('click',handClicked,false);
     }
 }
-addClickerToHands();
+addEventListeners();
 
-function handClicked(element){
-    var handElement = element.currentTarget;
+function handClicked(event){
+    var handElement = event.currentTarget;
     
     var handNum = handElement.getAttribute('class');
     handNum = parseInt(handNum[4]);
@@ -80,12 +80,10 @@ function winningHands(community,hands){
     var counter = 0;
     hands.forEach(function(element) {
         var fullhand = element.concat(community);
-        console.log('hand'+counter)
         var bestHand = handChecker(fullhand);
         ALLHANDS.push(bestHand);
         counter++;
     });
-    console.log(ALLHANDS);
 }
 
 //Main funtction
